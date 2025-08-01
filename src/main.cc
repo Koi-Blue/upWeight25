@@ -296,14 +296,14 @@ char mapNumberToChar(int num) {
     printf("get into mapNumberToChar\n");
     printf("num in map : %d\n", num);
     switch(num) {
-        case 1: return 'a'; printf("1 to char a\n");
-        case 2: return 'b'; printf("2 to char b\n");
-        case 3: return 'c'; printf("3 to char c\n");
-        case 4: return 'd'; printf("4 to char d\n");
-        case 5: return 'e'; printf("5 to char e\n");
-        case 6: return 'f'; printf("6 to char f\n");
-        case 9: return '9'; printf("9 to char 9\n");
-        default: return '0'; printf("default to char 0\n");
+        case 1: printf("1 to char a\n"); return 'A';
+        case 2: printf("2 to char b\n"); return 'B';
+        case 3: printf("3 to char c\n"); return 'C';
+        case 4: printf("4 to char d\n"); return 'D';
+        case 5: printf("5 to char e\n"); return 'E';
+        case 6: printf("6 to char f\n"); return 'F';
+        case 10: printf("9 to char 9\n"); return '9';
+        default: printf("default to char 0\n"); return '0';
     }
 }
 // 取物区处理
@@ -384,14 +384,16 @@ void processGettingOperations(cv::VideoCapture& cap, rknn_app_context_t* rknn_ap
         // a31b命令处理
         else if (current_signal == "a31b") {
             if (send_index < 6) {
-                int value = arr_get[send_index];
+                int value = arr_get[send_index] + 1;
                 printf("send_index == %d\n", value);
                 char data_char = mapNumberToChar(value);
+                printf("send_put_data_char: %c\n", data_char);
                 
                 // 构建帧：A + 数据 + E
                 char frame[4] = {'A', data_char, 'E', '\0'};
                 serial.write(frame);
-                printf("send_put: %s", frame);
+                printf("send_put down\n");
+                printf("send_put: %c\n", frame);
                 //////////////////// for test
                 // char frame[5] = {'A', 'B', 'A', 'E', '\0'};
                 // serial.write(frame);
@@ -403,6 +405,10 @@ void processGettingOperations(cv::VideoCapture& cap, rknn_app_context_t* rknn_ap
                 char error_frame[4] = {'A', 'X', 'E', '\0'};
                 serial.write(error_frame);
             }
+        }
+
+        else if (current_signal == "aEb") {
+            printf("Send aEb command received.\n");
         }
 
         // a30b命令处理
